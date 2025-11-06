@@ -91,6 +91,14 @@
   }
 }
 
+.resized {
+  width: 450px;
+  height: 300px;
+  object-fit: cover;   /* keeps aspect ratio, no stretch */
+  object-position: center; /* optional: centers the crop */
+}
+
+
 .header-div {
   position: relative;
   overflow: hidden;

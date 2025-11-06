@@ -24,12 +24,22 @@
                             <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
                         </button>
                     </form>
-                    <form class="d-flex">
+                    {% if logged_in %}
+                    <form class="d-flex" action="{{ url_for('logout') }}">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Logout
+                        </button>
+                    </form>
+                    {% else %}
+                    <form class="d-flex" action="{{ url_for('login') }}">
                         <button class="btn btn-outline-dark" type="submit">
                             <i class="bi bi-box-arrow-in-right"></i>
                             Login
                         </button>
                     </form>
+                    {% endif %}
+
                 </div>
             </div>
         </nav>
