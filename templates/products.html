@@ -34,18 +34,21 @@
                 <h5 class="fw-bolder">{{ post.name }}</h5>
                 <!-- Product reviews-->
                 <div class="d-flex justify-content-center small text-warning mb-2">
-                    {% for i in range(rating) %}
+                    {% for i in range(rating()) %}
                     <div class="bi-star-fill"></div>
                     {% endfor %}
                 </div>
                 <!-- Product price-->
-<!--                <span class="text-muted text-decoration-line-through">$20.00</span>-->
+                <span class="text-muted text-decoration-line-through">{{ post.price + (rating() * 10) }}</span>
                 {{ post.price }} Rs.
             </div>
+            stock: {{ post.stock }}
         </div>
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+            <div class="text-center">
+                <a class="btn btn-outline-dark mt-auto" href="{{ url_for('cart', source='addcart', product=post.name) }}">Add to cart</a>
+            </div>
         </div>
     </div>
 </div>
