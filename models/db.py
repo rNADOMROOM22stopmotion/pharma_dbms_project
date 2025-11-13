@@ -12,16 +12,18 @@ PASSWORD = os.getenv("password")
 HOST = os.getenv("host")
 PORT = os.getenv("port")
 DBNAME = os.getenv("dbname")
+DATABASE_URL = os.getenv("db_url")
 
 # Connect to the database
 def cursor():
     try:
         connection = psycopg2.connect(
-            user=USER,
-            password=PASSWORD,
-            host=HOST,
-            port=PORT,
-            dbname=DBNAME
+            # user=USER,
+            # password=PASSWORD,
+            # host=HOST,
+            # port=PORT,
+            # dbname=DBNAME
+            DATABASE_URL
         )
         print("Connection successful!")
 
