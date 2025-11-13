@@ -22,8 +22,46 @@ def login_required(f):
         return f(*args, **kwargs)
     return wrapper
 
-# sample
-# USER = {'email': 'admin', 'password': '1234'}
+
+def cart_logic(product_name: str, logic: str) -> None:
+    if logic == "add":
+        cursor.execute("""UPDATE users SET cart = cart + 1 WHERE email = %s;""", (session['email'],))
+
+        cursor.execute("""
+            UPDATE cart
+            SET quantity = quantity + 1
+            WHERE "user" = (SELECT id FROM users WHERE email = %s)
+            AND medicine = %s
+        """, (session['email'], product_name))
+
+        if cursor.rowcount == 0:  # rowcount is 0 if no row was updated/ row does not exist.
+            cursor.execute("""
+                INSERT INTO cart ("user", medicine, quantity)
+                SELECT id, %s, 1
+                FROM users
+                WHERE email = %s
+            """, (product_name, session['email']))
+        conn.commit()
+    else:
+        cursor.execute("""
+            UPDATE users SET cart = cart - 1 WHERE email = %s AND cart > 0;""", (session['email'],))
+
+        cursor.execute("""
+            UPDATE cart
+            SET quantity = quantity - 1
+            WHERE "user" = (SELECT id FROM users WHERE email = %s)
+            AND medicine = %s
+            AND quantity > 0;
+        """, (session['email'], product_name))
+
+        cursor.execute("""
+            DELETE FROM cart
+            WHERE "user" = (SELECT id FROM users WHERE email = %s)
+            AND medicine = %s
+            AND quantity = 0;
+        """, (session['email'], product_name))
+        conn.commit()
+
 
 @app.route('/')
 @login_required
@@ -45,7 +83,7 @@ def login():
         password = request.form['password']
         cursor.execute("""SELECT * FROM users WHERE email = %s""", (email,))
         USER = cursor.fetchone()
-        if USER == None:
+        if not USER:
             return redirect(url_for('login', error= 'User does not exists.'))
         elif check_password_hash(USER['password_hash'], password):
             session['email'] = email
@@ -93,31 +131,18 @@ def cart():
     source = request.args.get('source') or None
     if source == "addcart":
         product_name = request.args.get('product')
-        cursor.execute("""UPDATE users SET cart = cart + 1 WHERE email = %s;""", (session['email'],))
 
-        cursor.execute("""
-            UPDATE cart
-            SET quantity = quantity + 1
-            WHERE "user" = (SELECT id FROM users WHERE email = %s)
-            AND medicine = %s
-        """, (session['email'], product_name))
-
-        if cursor.rowcount == 0: # rowcount is 0 if no row was updated/ row does not exists
-            cursor.execute("""
-                INSERT INTO cart ("user", medicine, quantity)
-                SELECT id, %s, 1
-                FROM users
-                WHERE email = %s
-            """, (product_name, session['email']))
-        conn.commit()
+        cart_logic(product_name=product_name, logic="add")
 
         return redirect(url_for('home'))
     if source == "cart":
         act = request.args.get('act')
+        product_name = request.args.get('product')
         if act == "inc":
-            pass
+            cart_logic(product_name=product_name, logic="add")
         elif act == "dec":
-            pass
+            cart_logic(product_name=product_name, logic="remove")
+        return redirect(url_for('cart'))
 
     cursor.execute("""
             SELECT * FROM cart
@@ -130,11 +155,27 @@ def cart():
         cursor.execute("""SELECT * FROM medicines WHERE name = %s""", (med_name,))
         med_data = cursor.fetchone()
         med["price"] = med_data["price"]
-        total += med_data["price"]
         med["sale"] = med_data["sale"]
         med["image"] = med_data["image"]
         med["stock"] = med_data["stock"]
+
+        #totaling logic
+        cursor.execute("""SELECT quantity FROM cart WHERE medicine = %s""", (med_name,))
+        quantity = cursor.fetchone()['quantity']
+        total += med_data["price"] * quantity
+
+    products = sorted(products, key=lambda x: x["medicine"].lower())
+
     return render_template("cart.html", logged_in = logged_in, products=products, total=total)
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

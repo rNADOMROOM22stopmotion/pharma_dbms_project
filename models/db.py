@@ -52,18 +52,20 @@ if __name__ == "__main__":
 # """)
 #     posts = c.fetchall()
 #     print(posts[0]['json_agg'])
-    email = "example@email.com"
-    cursor.execute("""
-                SELECT * FROM cart
-                WHERE "user" = (SELECT id FROM users WHERE email = %s)
-            """, (email,))
-    products = cursor.fetchall()
-    for med in products:
-        med_name = med['medicine']
-        cursor.execute("""SELECT * FROM medicines WHERE name = %s""", (med_name,))
-        med_data = cursor.fetchone()
-        med["price"] = med_data["price"]
-        med["sale"] = med_data["sale"]
-        med["image"] = med_data["image"]
-        med["stock"] = med_data["stock"]
-    print(products)
+#     email = "example@email.com"
+#     cursor.execute("""
+#                 SELECT * FROM cart
+#                 WHERE "user" = (SELECT id FROM users WHERE email = %s)
+#             """, (email,))
+#     products = cursor.fetchall()
+#     for med in products:
+#         med_name = med['medicine']
+#         cursor.execute("""SELECT * FROM medicines WHERE name = %s""", (med_name,))
+#         med_data = cursor.fetchone()
+#         med["price"] = med_data["price"]
+#         med["sale"] = med_data["sale"]
+#         med["image"] = med_data["image"]
+#         med["stock"] = med_data["stock"]
+    cursor.execute("""SELECT quantity FROM cart WHERE medicine = 'Paracetamol'""")
+    quantity = cursor.fetchone()['quantity']
+    print(quantity)
