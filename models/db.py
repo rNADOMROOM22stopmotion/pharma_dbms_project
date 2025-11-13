@@ -37,11 +37,11 @@ def cursor():
         # cursor.close()
         # connection.close()
         # print("Connection closed.")
+        return cursor, connection
 
     except Exception as e:
-        cursor = None
         print(f"Failed to connect: {e}")
-    return cursor, connection
+        return None, None
 
 if __name__ == "__main__":
     cursor, conn = cursor()
@@ -66,6 +66,3 @@ if __name__ == "__main__":
 #         med["sale"] = med_data["sale"]
 #         med["image"] = med_data["image"]
 #         med["stock"] = med_data["stock"]
-    cursor.execute("""SELECT quantity FROM cart WHERE medicine = 'Paracetamol'""")
-    quantity = cursor.fetchone()['quantity']
-    print(quantity)

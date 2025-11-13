@@ -10,6 +10,6 @@ dependencies = [
     "gunicorn>=23.0.0",
     "psycopg>=3.2.12",
     "psycopg2-binary>=2.9.11",
-    "pydantic>=2.12.4",
+    "pydantic[email]>=2.12.4",
     "python-dotenv>=1.2.1",
 ]
