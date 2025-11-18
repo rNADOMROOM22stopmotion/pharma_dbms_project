@@ -119,6 +119,7 @@ This project is structured as follows:
 ├───models/             # Database models and related logic
 │   ├───__init__.py
 │   ├───db.py           # Database connection and utility functions
+│   ├───llm_api.py      # Ai connection for chatbot logic
 │   ├───models.py       # SQLAlchemy models for database tables
 │   ├───rating.py       # Rating-related model or logic
 │   └───__pycache__/
