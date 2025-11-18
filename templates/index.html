@@ -42,16 +42,66 @@
         <script src="js/scripts.js"></script>
 <div style="
     position: fixed; bottom: 20px; right: 20px;
-    width: 300px; height: 350px;
-    background: white; border: 1px solid #ccc;
-    border-radius: 8px; display: flex; flex-direction: column;">
+    width: 320px; height: 380px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+    display: flex; flex-direction: column;
+    font-family: 'Inter', sans-serif;
+">
 
-    <div id="chat-body" style="flex:1; padding:10px; overflow-y:auto; background:#f7f7f7;"></div>
+    <!-- Header -->
+    <div style="
+        padding: 12px 14px;
+        background: #272A2D;
+        color: white;
+        font-weight: 600;
+        border-radius: 12px 12px 0 0;
+        font-size: 16px;">
+        Medify-AI Assistant
+    </div>
 
-    <div style="display:flex; border-top:1px solid #ddd;">
-        <input id="chat-input" type="text" placeholder="Message..."
-               style="flex:1; padding:8px; border:none;">
-        <button id="chat-send" style="padding:8px 12px; border:none; background:#4A6CF7; color:white;">
+    <!-- Chat Body -->
+    <div id="chat-body" style="
+        flex: 1;
+        padding: 12px;
+        overflow-y: auto;
+        background: #f3f4f6;
+        font-size: 14px;">
+    </div>
+
+    <!-- Input Area -->
+    <div style="
+        display: flex;
+        border-top: 1px solid #e5e7eb;
+        padding: 8px;
+        gap: 8px;
+        background: #ffffff;
+        border-radius: 0 0 12px 12px;
+    ">
+        <input id="chat-input" type="text" placeholder="Type a message..."
+               style="
+                   flex: 1;
+                   padding: 10px;
+                   border: 1px solid #d1d5db;
+                   border-radius: 8px;
+                   outline: none;
+                   transition: 0.2s;
+               "
+               onfocus="this.style.borderColor='#4A6CF7'">
+
+        <button id="chat-send" style="
+            padding: 10px 14px;
+            border: none;
+            background: #4A6CF7;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        "
+        onmouseover="this.style.background='#3d5be8'"
+        onmouseout="this.style.background='#4A6CF7'">
             Send
         </button>
     </div>
