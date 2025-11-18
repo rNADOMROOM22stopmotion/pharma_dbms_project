@@ -4,8 +4,9 @@ import dotenv
 from pydantic import ValidationError
 from models import db, rating
 from models.models import User
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from models.llm_api import ask_llm
 dotenv.load_dotenv()
 
 app = Flask(__name__)
@@ -176,6 +177,16 @@ def about():
 def contact():
     return render_template("contact.html")
 
+context_window = {}
+@app.post("/chat")
+def chat():
+    msg = request.json["message"]
+    response = ask_llm(msg, context_window)
+    context_window[msg] = response
+    if len(context_window) > 5:
+        context_window.pop(next(iter(context_window)))
+    print(context_window)
+    return jsonify({"reply": response})   # Replace with LLM later
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)
